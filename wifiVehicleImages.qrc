@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/wifiVehicleImages">
+        <file>image/12W45332bZ-D1406.png</file>
+        <file>image/12W453330V0-F40K.png</file>
+        <file>image/12W453330430-EBR.png</file>
+        <file>image/12W453331340-G1C8.png</file>
+        <file>image/background.png</file>
+        <file>image/chinaz_PNG17.png</file>
+        <file>image/connect.png</file>
+        <file>image/document-open-recent.png</file>
+        <file>image/gnome-shutdown.png</file>
+        <file>image/gtk-about.png</file>
+        <file>image/gtk-media-play-ltr.png</file>
+        <file>image/gtk-media-stop.png</file>
+        <file>image/gtk-revert-to-saved-rtl.png</file>
+        <file>image/photo.png</file>
+        <file>image/stock_file-properites.png</file>
+        <file>image/stop.png</file>
+        <file>image/video_background.png</file>
+        <file>image/disconnect.png</file>
+    </qresource>
+</RCC>
