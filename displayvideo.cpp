@@ -1,4 +1,5 @@
 #include "displayvideo.h"
+#include <QMessageBox>
 
 displayVideo::displayVideo(QWidget *parent) :
     QWidget(parent)
@@ -30,8 +31,8 @@ void displayVideo::newConnect()
     videotcpSocket->abort();                                    //取消已有的连接
     videotcpSocket->connectToHost(ipAddr, videoPort.toInt());   //连接到主机, 这里从界面获取主机地址和端口号
 
-    //qDebug() << "ipAddr = " << ipAddr;
-    //qDebug("videoPort = %d", videoPort.toInt());
+    qDebug() << "ipAddr = " << ipAddr;
+    qDebug("videoPort = %d", videoPort.toInt());
 
     //连接失败
     connect(videotcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),this, SLOT(displayError(QAbstractSocket::SocketError)));
@@ -43,6 +44,9 @@ void displayVideo::newConnect()
 void displayVideo::displayError(QAbstractSocket::SocketError)
 {
     qDebug() << videotcpSocket->errorString();          //输出错误信息
+    QMessageBox::critical(this, tr("Camera connection failure"),
+                          tr("Please start the mjpg-streamer server first and\n STOP THE CAMERA!"),
+                          QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
 }
 
 //连接成功后, 准备接收数据

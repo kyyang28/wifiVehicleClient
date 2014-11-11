@@ -1,5 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QMessageBox>
+#include <QDateTime>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -11,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setStyleSheet("#MainWindow{border-image:url(:/wifiVehicleImages/image/background.png);}");
 
     setup           = new SetupDialog(this);
+    grap            = new grapDialog(this);
     about           = new AboutDialog(this);
     carControl      = new control;
     isConnected     = false;
@@ -35,6 +39,7 @@ MainWindow::~MainWindow()
     delete carControl;
     delete setup;
     delete about;
+    delete grap;
 }
 
 void MainWindow::newConnect()
@@ -68,7 +73,11 @@ void MainWindow::socketFailed()
 
 void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
 {
-    if (isConnected) {
+    if (!isConnected) {
+        QMessageBox::warning(this, tr("Key press warning"),
+                             tr("Please connect to the server before pressing the direction keys"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
         ui->controlState->setText(tr("Keyboard"));
         if ( (keyEvent->key() == Qt::Key_W) && (keyEvent->isAutoRepeat() == false) ) {
             ui->moveState->setText(tr("Forward"));
@@ -119,7 +128,11 @@ void MainWindow::keyReleaseEvent(QKeyEvent *keyEvent)
 
 void MainWindow::on_frontButton_pressed()
 {
-    if (isConnected) {
+    if (!isConnected) {
+        QMessageBox::warning(this, tr("Front button warning"),
+                             tr("Please connect to the server before pressing the front button"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
         ui->controlState->setText(tr("Mouse"));
         ui->moveState->setText(tr("Forward"));
         carControl->vehicleMoveForward();
@@ -137,7 +150,11 @@ void MainWindow::on_frontButton_released()
 
 void MainWindow::on_leftButton_pressed()
 {
-    if (isConnected) {
+    if (!isConnected) {
+        QMessageBox::warning(this, tr("Left button warning"),
+                             tr("Please connect to the server before pressing the left button"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
         ui->controlState->setText(tr("Mouse"));
         ui->moveState->setText(tr("Turn left"));
         carControl->vehicleTurnLeft();
@@ -155,7 +172,11 @@ void MainWindow::on_leftButton_released()
 
 void MainWindow::on_rightButton_pressed()
 {
-    if (isConnected) {
+    if (!isConnected) {
+        QMessageBox::warning(this, tr("Right button warning"),
+                             tr("Please connect to the server before pressing the right button"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
         ui->controlState->setText(tr("Mouse"));
         ui->moveState->setText(tr("Turn right"));
         carControl->vehicleTurnRight();
@@ -173,7 +194,11 @@ void MainWindow::on_rightButton_released()
 
 void MainWindow::on_backButton_pressed()
 {
-    if (isConnected) {
+    if (!isConnected) {
+        QMessageBox::warning(this, tr("Back button warning"),
+                             tr("Please connect to the server before pressing the back button"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
         ui->controlState->setText(tr("Mouse"));
         ui->moveState->setText(tr("Backward"));
         carControl->vehicleMoveBackward();
@@ -212,23 +237,44 @@ void MainWindow::on_disconnectButton_clicked()
         ui->disconnectButton->setEnabled(false);
         ui->actionDisconnect->setEnabled(false);
         ui->buzzerButton->setText(tr("Buzzer"));
+
+        /* Stop the camera */
+        openvideo = false;
+        ui->videoWidget->videotcpSocket->disconnect();
+        ui->videoWidget->image.load(":/wifiVehicleImages/image/video_background.png");
+        update();
     }
 }
 
 void MainWindow::on_startCamButton_clicked()
 {
-    if (!openvideo) {
-        openvideo = true;
-        ui->videoWidget->ipAddr     = setup->ipAddr;
-        ui->videoWidget->videoPort  = setup->videoPort;
-        ui->videoWidget->newConnect();
-        //update();
+    /* Do not open the camera if client is connecting or not connected to the server */
+    if (!isConnected) {
+        QMessageBox::warning(this, tr("Start camera warning"),
+                             tr("Please connect to the server before starting the camera"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
+        if (!openvideo) {
+            openvideo = true;
+            ui->videoWidget->ipAddr     = setup->ipAddr;
+            ui->videoWidget->videoPort  = setup->videoPort;
+            ui->videoWidget->newConnect();
+            //update();
+        }else {
+            QMessageBox::warning(this, tr("Camera warning"),
+                                 tr("Camera is already running!"),
+                                 QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+        }
     }
 }
 
 void MainWindow::on_stopCamButton_clicked()
 {
-    if (openvideo) {
+    if (!openvideo) {
+        QMessageBox::warning(this, tr("Stop camera warning"),
+                             tr("Please start the camera first!"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
         openvideo = false;
         ui->videoWidget->videotcpSocket->disconnect();
         ui->videoWidget->image.load(":/wifiVehicleImages/image/video_background.png");
@@ -238,12 +284,22 @@ void MainWindow::on_stopCamButton_clicked()
 
 void MainWindow::on_capFrameButton_clicked()
 {
-
+    if (!openvideo) {
+        QMessageBox::warning(this, tr("Camera capture warning"),
+                             tr("Please start the camera first!"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
+        savePicture();
+    }
 }
 
 void MainWindow::on_readTempButton_clicked()
 {
-    if (isConnected) {
+    if (!isConnected) {
+        QMessageBox::warning(this, tr("Read temperature warning"),
+                             tr("Please connect to the server before reading the temperature"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
         float temp;
         temp = carControl->readTemperature();
         ui->tempLcdNumber->display(temp);
@@ -252,7 +308,11 @@ void MainWindow::on_readTempButton_clicked()
 
 void MainWindow::on_buzzerButton_clicked()
 {
-    if (isConnected) {
+    if (!isConnected) {
+        QMessageBox::warning(this, tr("Buzzer warning"),
+                             tr("Please connect to the server before operating on the buzzer"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
         if (!carControl->isBuzzerOn) {
             carControl->buzzerOn();
             ui->buzzerButton->setText(tr("Buzzer ON"));
@@ -276,9 +336,15 @@ void MainWindow::on_actionIP_Setup_IP_triggered()
 
 void MainWindow::on_pwmMotorSlider_valueChanged(int value)
 {
-    //qDebug("value = %d\n", value);
-    carControl->pwmMotorChange(value);
-    ui->pwmMotorLcdNumber->display(value);
+    if (!isConnected) {
+        QMessageBox::warning(this, tr("Change motor speed warning"),
+                             tr("Please connect to the server before changing the motor speed"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
+        //qDebug("value = %d\n", value);
+        carControl->pwmMotorChange(value);
+        ui->pwmMotorLcdNumber->display(value);
+    }
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -314,5 +380,46 @@ void MainWindow::on_actionDisconnect_triggered()
         ui->disconnectButton->setEnabled(false);
         ui->actionDisconnect->setEnabled(false);
         ui->buzzerButton->setText(tr("Buzzer"));
+
+        /* Stop the camera */
+        openvideo = false;
+        ui->videoWidget->videotcpSocket->disconnect();
+        ui->videoWidget->image.load(":/wifiVehicleImages/image/video_background.png");
+        update();
+    }
+}
+
+void MainWindow::on_actionPicture_directory_setup_triggered()
+{
+    grap->exec();
+}
+
+void MainWindow::savePicture()
+{
+    QDateTime time = QDateTime::currentDateTime();
+    QString str = time.toString(tr("/") + "yyMMddhhmmss.jpg");
+
+    if (grap->pictureDir.isEmpty()) {
+        QString fileName = QFileDialog::getSaveFileName(NULL, tr("Save as..."), str);   // get the file name
+        if (!fileName.isEmpty()) {
+            ui->videoWidget->image.save(fileName);
+            QMessageBox::information(this, tr("Picture saved"),
+                                 tr("The snapshot is saved!"),
+                                 QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+        }
+    }else {
+        QString fileName = grap->pictureDir + str;
+        if (!fileName.isEmpty()) {
+            QMessageBox::StandardButton rb = QMessageBox::question(NULL, "Snapshot saved?",
+                                                                   "Do you want to save the snapshot or not ?",
+                                                                   QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+            if (rb == QMessageBox::Ok) {
+                ui->videoWidget->image.save(fileName);
+
+                QMessageBox::information(this, tr("Snapshot saved"),
+                                            "The snapshot is saved to (" + grap->pictureDir + ")",
+                                            QMessageBox::Ok, QMessageBox::Ok);
+            }
+        }
     }
 }

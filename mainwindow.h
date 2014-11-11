@@ -7,6 +7,7 @@
 #include "setupdialog.h"
 #include "displayvideo.h"
 #include "aboutdialog.h"
+#include "grapdialog.h"
 
 namespace Ui {
     class MainWindow;
@@ -63,10 +64,13 @@ private slots:
     void on_actionConnect_triggered();
     void on_actionDisconnect_triggered();
 
+    void on_actionPicture_directory_setup_triggered();
+
 private:
     Ui::MainWindow *ui;
 
     SetupDialog *setup;
+    grapDialog *grap;
     AboutDialog *about;
     control *carControl;        //定义 control 类
     bool isConnected;             //判断是否按了连接按钮
@@ -74,6 +78,7 @@ private:
     bool openvideo;             //判断视频是否开启 。
     void newConnect();
     void disconnect();
+    void savePicture();
 };
 
 #endif // MAINWINDOW_H
