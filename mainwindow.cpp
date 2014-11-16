@@ -29,6 +29,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->connectButton->setEnabled(true);
     ui->disconnectButton->setEnabled(false);
+    ui->frontButton->setEnabled(false);
+    ui->backButton->setEnabled(false);
+    ui->leftButton->setEnabled(false);
+    ui->rightButton->setEnabled(false);
+    ui->startCamButton->setEnabled(false);
+    ui->stopCamButton->setEnabled(false);
+    ui->capFrameButton->setEnabled(false);
+    ui->readTempButton->setEnabled(false);
+    ui->buzzerButton->setEnabled(false);
+    ui->pwmMotorSlider->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -64,6 +74,17 @@ void MainWindow::socketSucceed()
 {
     ui->netState->setText(tr("Connected"));
     isConnected = true;
+
+    ui->frontButton->setEnabled(true);
+    ui->backButton->setEnabled(true);
+    ui->leftButton->setEnabled(true);
+    ui->rightButton->setEnabled(true);
+    ui->startCamButton->setEnabled(true);
+    ui->stopCamButton->setEnabled(true);
+    ui->capFrameButton->setEnabled(true);
+    ui->readTempButton->setEnabled(true);
+    ui->buzzerButton->setEnabled(true);
+    ui->pwmMotorSlider->setEnabled(true);
 }
 
 void MainWindow::socketFailed()
@@ -80,28 +101,28 @@ void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
     }else {
         ui->controlState->setText(tr("Keyboard"));
         if ( (keyEvent->key() == Qt::Key_W) && (keyEvent->isAutoRepeat() == false) ) {
-            ui->moveState->setText(tr("Forward"));
+            ui->moveState->setText(tr("Fore"));
             carControl->vehicleMoveForward();
             ui->frontButton->setEnabled(false);
             keyEvent->ignore();
         }
 
         if ( (keyEvent->key() == Qt::Key_S) && (keyEvent->isAutoRepeat() == false) ) {
-            ui->moveState->setText(tr("Backward"));
+            ui->moveState->setText(tr("Back"));
             carControl->vehicleMoveBackward();
             ui->backButton->setEnabled(false);
             keyEvent->ignore();
         }
 
         if ( (keyEvent->key() == Qt::Key_A) && (keyEvent->isAutoRepeat() == false) ) {
-            ui->moveState->setText(tr("Turn left"));
+            ui->moveState->setText(tr("Left"));
             carControl->vehicleTurnLeft();
             ui->leftButton->setEnabled(false);
             keyEvent->ignore();
         }
 
         if ( (keyEvent->key() == Qt::Key_D) && (keyEvent->isAutoRepeat() == false) ) {
-            ui->moveState->setText(tr("Turn right"));
+            ui->moveState->setText(tr("Right"));
             carControl->vehicleTurnRight();
             ui->rightButton->setEnabled(false);
             keyEvent->ignore();
@@ -134,7 +155,7 @@ void MainWindow::on_frontButton_pressed()
                              QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     }else {
         ui->controlState->setText(tr("Mouse"));
-        ui->moveState->setText(tr("Forward"));
+        ui->moveState->setText(tr("Fore"));
         carControl->vehicleMoveForward();
     }
 }
@@ -156,7 +177,7 @@ void MainWindow::on_leftButton_pressed()
                              QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     }else {
         ui->controlState->setText(tr("Mouse"));
-        ui->moveState->setText(tr("Turn left"));
+        ui->moveState->setText(tr("Left"));
         carControl->vehicleTurnLeft();
     }
 }
@@ -178,7 +199,7 @@ void MainWindow::on_rightButton_pressed()
                              QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     }else {
         ui->controlState->setText(tr("Mouse"));
-        ui->moveState->setText(tr("Turn right"));
+        ui->moveState->setText(tr("Right"));
         carControl->vehicleTurnRight();
     }
 }
@@ -200,7 +221,7 @@ void MainWindow::on_backButton_pressed()
                              QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     }else {
         ui->controlState->setText(tr("Mouse"));
-        ui->moveState->setText(tr("Backward"));
+        ui->moveState->setText(tr("Back"));
         carControl->vehicleMoveBackward();
     }
 }
@@ -237,6 +258,17 @@ void MainWindow::on_disconnectButton_clicked()
         ui->disconnectButton->setEnabled(false);
         ui->actionDisconnect->setEnabled(false);
         ui->buzzerButton->setText(tr("Buzzer"));
+
+        ui->frontButton->setEnabled(false);
+        ui->backButton->setEnabled(false);
+        ui->leftButton->setEnabled(false);
+        ui->rightButton->setEnabled(false);
+        ui->startCamButton->setEnabled(false);
+        ui->stopCamButton->setEnabled(false);
+        ui->capFrameButton->setEnabled(false);
+        ui->readTempButton->setEnabled(false);
+        ui->buzzerButton->setEnabled(false);
+        ui->pwmMotorSlider->setEnabled(false);
 
         /* Stop the camera */
         openvideo = false;
@@ -380,6 +412,17 @@ void MainWindow::on_actionDisconnect_triggered()
         ui->disconnectButton->setEnabled(false);
         ui->actionDisconnect->setEnabled(false);
         ui->buzzerButton->setText(tr("Buzzer"));
+
+        ui->frontButton->setEnabled(false);
+        ui->backButton->setEnabled(false);
+        ui->leftButton->setEnabled(false);
+        ui->rightButton->setEnabled(false);
+        ui->startCamButton->setEnabled(false);
+        ui->stopCamButton->setEnabled(false);
+        ui->capFrameButton->setEnabled(false);
+        ui->readTempButton->setEnabled(false);
+        ui->buzzerButton->setEnabled(false);
+        ui->pwmMotorSlider->setEnabled(false);
 
         /* Stop the camera */
         openvideo = false;

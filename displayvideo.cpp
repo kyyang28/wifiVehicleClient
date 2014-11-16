@@ -59,31 +59,31 @@ void displayVideo::go()
 //接收到数据时的处理
 void displayVideo::tcpReadyRead()
 {
-    datasize=videotcpSocket->bytesAvailable();
+    datasize = videotcpSocket->bytesAvailable();
 
     //开始接收新的图像数据
-    if(length==0) {
-        tmpbytearray=videotcpSocket->readLine();
+    if (length == 0) {
+        tmpbytearray = videotcpSocket->readLine();
 
-        if(tmpbytearray.contains("Content-Type: image/jpeg")) {
-            tmpbytearray=videotcpSocket->readLine();
-            if(tmpbytearray.contains("Content-Length:")) {
-                length=getpicturesize(tmpbytearray);
+        if (tmpbytearray.contains("Content-Type: image/jpeg")) {
+            tmpbytearray = videotcpSocket->readLine();
+            if (tmpbytearray.contains("Content-Length:")) {
+                length = getFrameSize(tmpbytearray);
 
                 //判断可接收数据大小的是否等于一帧数据
-                if(datasize>=length) {
-                    photodata=videotcpSocket->read(length);
+                if (datasize >= length) {
+                    photodata = videotcpSocket->read(length);
                     image.loadFromData(photodata,"jpeg");
                     update();
                     photodata.clear();
-                    length=0;
-                    tmp=0;
+                    length = 0;
+                    tmp = 0;
                     return;
                 }else {         //接收的数据还不够一帧图像
                     //tmpbytearray=videotcpSocket->readLine();
-                    tmpbytearray=videotcpSocket->readLine();
-                    photodata=videotcpSocket->readAll();
-                    tmp=photodata.size();
+                    tmpbytearray = videotcpSocket->readLine();
+                    photodata = videotcpSocket->readAll();
+                    tmp = photodata.size();
                     return;
                 }
             }
@@ -91,29 +91,29 @@ void displayVideo::tcpReadyRead()
     }
 
     //接收剩余的数据
-    if(length!=0) {
-        tmp=tmp+datasize; //已经接收的数据大小
+    if (length != 0) {
+        tmp = tmp + datasize; //已经接收的数据大小
 
         //接收剩余的数据
-        if(tmp<length) {
-            tmpbytearray=videotcpSocket->readAll();
+        if (tmp < length) {
+            tmpbytearray = videotcpSocket->readAll();
             photodata.append(tmpbytearray);
             return;
         }else {     //接收完完整的图像
-            tmpbytearray=videotcpSocket->read(length-photodata.size());
+            tmpbytearray = videotcpSocket->read(length-photodata.size());
             photodata.append(tmpbytearray);
             image.loadFromData(photodata,"jpeg");
             update();
             photodata.clear();
-            length=0;
-            tmp=0;
+            length = 0;
+            tmp = 0;
             return;
         }
     }
 }
 
 //获取图片大小
-int displayVideo::getpicturesize(QString str)
+int displayVideo::getFrameSize(QString str)
 {
     QString pattern("(Content-Length): (.....)");
     QRegExp rx(pattern);

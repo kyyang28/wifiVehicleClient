@@ -21,7 +21,7 @@ public:
     int tmp;                            //接收到的字节数
     int length;                         //一帧图片的字节数
     void newConnect();                  //连接服务器
-    int getpicturesize(QString str);    //获取图片大小
+    int getFrameSize(QString str);      //获取图片大小
 
 protected:
     void paintEvent(QPaintEvent *);     //重绘事件
