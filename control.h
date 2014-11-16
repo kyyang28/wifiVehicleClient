@@ -11,12 +11,14 @@
 
 #define WIFI_VEHICLE_MOVE_FORWARD           0
 #define WIFI_VEHICLE_MOVE_BACKWARD          1
-#define WIFI_VEHICLE_MOVE_LEFT              2
-#define WIFI_VEHICLE_MOVE_RIGHT             3
-#define WIFI_VEHICLE_STOP                   4
+/* DONOT use number '2', since ioctl is taken this number. If you have to use 2, then use magic number */
+/* We don't use ioctl's magic number here, because our app is Windows Qt, it cannot use <sys/ioctl> header file */
+#define WIFI_VEHICLE_MOVE_LEFT              3
+#define WIFI_VEHICLE_MOVE_RIGHT             4
+#define WIFI_VEHICLE_STOP                   5
 
-#define WIFI_VEHICLE_BUZZER_ON              5
-#define WIFI_VEHICLE_BUZZER_OFF             6
+#define WIFI_VEHICLE_BUZZER_ON              6
+#define WIFI_VEHICLE_BUZZER_OFF             7
 
 struct reqMsg {
     unsigned char type;

@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     carControl      = new control;
     isConnected     = false;
     isConnecting    = false;
+    isBuzzerOn      = false;
     openvideo       = false;
 
     /* if client connected the server, the socketSucceed will be invoked */
@@ -94,40 +95,59 @@ void MainWindow::socketFailed()
 
 void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
 {
+#if 0
     if (!isConnected) {
         QMessageBox::warning(this, tr("Key press warning"),
                              tr("Please connect to the server before pressing the direction keys"),
                              QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     }else {
+#endif
         ui->controlState->setText(tr("Keyboard"));
         if ( (keyEvent->key() == Qt::Key_W) && (keyEvent->isAutoRepeat() == false) ) {
-            ui->moveState->setText(tr("Fore"));
+            ui->moveState->setText(tr("Foreward"));
             carControl->vehicleMoveForward();
             ui->frontButton->setEnabled(false);
             keyEvent->ignore();
         }
 
         if ( (keyEvent->key() == Qt::Key_S) && (keyEvent->isAutoRepeat() == false) ) {
-            ui->moveState->setText(tr("Back"));
+            ui->moveState->setText(tr("Backward"));
             carControl->vehicleMoveBackward();
             ui->backButton->setEnabled(false);
             keyEvent->ignore();
         }
 
         if ( (keyEvent->key() == Qt::Key_A) && (keyEvent->isAutoRepeat() == false) ) {
-            ui->moveState->setText(tr("Left"));
+            ui->moveState->setText(tr("Left turn"));
             carControl->vehicleTurnLeft();
             ui->leftButton->setEnabled(false);
             keyEvent->ignore();
         }
 
         if ( (keyEvent->key() == Qt::Key_D) && (keyEvent->isAutoRepeat() == false) ) {
-            ui->moveState->setText(tr("Right"));
+            ui->moveState->setText(tr("Right turn"));
             carControl->vehicleTurnRight();
             ui->rightButton->setEnabled(false);
             keyEvent->ignore();
         }
-    }
+
+        if ( (keyEvent->key() == Qt::Key_B) && (keyEvent->isAutoRepeat() == false) ) {
+            if (!isBuzzerOn) {
+                ui->buzzerButton->setText(tr("Buzzer on"));
+                carControl->buzzerOn();
+                isBuzzerOn = true;
+                //ui->rightButton->setEnabled(false);
+                keyEvent->ignore();
+            }else {
+                ui->buzzerButton->setText(tr("Buzzer off"));
+                carControl->buzzerOff();
+                isBuzzerOn = false;
+                //ui->rightButton->setEnabled(false);
+                keyEvent->ignore();
+            }
+        }
+
+    //}
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *keyEvent)
@@ -155,7 +175,7 @@ void MainWindow::on_frontButton_pressed()
                              QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     }else {
         ui->controlState->setText(tr("Mouse"));
-        ui->moveState->setText(tr("Fore"));
+        ui->moveState->setText(tr("Foreward"));
         carControl->vehicleMoveForward();
     }
 }
@@ -177,7 +197,7 @@ void MainWindow::on_leftButton_pressed()
                              QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     }else {
         ui->controlState->setText(tr("Mouse"));
-        ui->moveState->setText(tr("Left"));
+        ui->moveState->setText(tr("Left turn"));
         carControl->vehicleTurnLeft();
     }
 }
@@ -199,7 +219,7 @@ void MainWindow::on_rightButton_pressed()
                              QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     }else {
         ui->controlState->setText(tr("Mouse"));
-        ui->moveState->setText(tr("Right"));
+        ui->moveState->setText(tr("Right turn"));
         carControl->vehicleTurnRight();
     }
 }
@@ -221,7 +241,7 @@ void MainWindow::on_backButton_pressed()
                              QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     }else {
         ui->controlState->setText(tr("Mouse"));
-        ui->moveState->setText(tr("Back"));
+        ui->moveState->setText(tr("Backward"));
         carControl->vehicleMoveBackward();
     }
 }

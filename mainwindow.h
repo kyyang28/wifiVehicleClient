@@ -75,6 +75,7 @@ private:
     control *carControl;        //定义 control 类
     bool isConnected;             //判断是否按了连接按钮
     bool isConnecting;
+    bool isBuzzerOn;
     bool openvideo;             //判断视频是否开启 。
     void newConnect();
     void disconnect();
