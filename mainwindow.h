@@ -25,7 +25,7 @@ public:
     void keyReleaseEvent(QKeyEvent *keyEvent);
 
 private slots:
-    /* Control related */
+    /* Wifi vehicle control operations */
     void on_frontButton_pressed();
     void on_frontButton_released();
     void on_leftButton_pressed();
@@ -36,16 +36,8 @@ private slots:
     void on_backButton_released();
     void on_connectButton_clicked();
 
-    /* Camera related */
-    void on_startCamButton_clicked();
-    void on_stopCamButton_clicked();
-    void on_capFrameButton_clicked();
-
     /* Temperature related */
     void on_readTempButton_clicked();
-
-    /* Buzzer related */
-    void on_buzzerButton_clicked();
 
     void on_exitButton_clicked();
 
@@ -66,6 +58,22 @@ private slots:
 
     void on_actionPicture_directory_setup_triggered();
 
+    /* Camera on/off/capture operations */
+    void on_startCamButton_clicked();
+    void on_stopCamButton_clicked();
+    void on_capFrameButton_clicked();
+
+    /* Camera control operations */
+    void on_camUpButton_pressed();
+    void on_camDownButton_pressed();
+    void on_camLeftButton_pressed();
+    void on_camRightButton_pressed();
+    void on_camUpButton_released();
+    void on_camDownButton_released();
+    void on_camLeftButton_released();
+    void on_camRightButton_released();
+
+
 private:
     Ui::MainWindow *ui;
 
@@ -75,8 +83,7 @@ private:
     control *carControl;        //定义 control 类
     bool isConnected;             //判断是否按了连接按钮
     bool isConnecting;
-    bool isBuzzerOn;
-    bool openvideo;             //判断视频是否开启 。
+    bool openvideo;             //判断视频是否开启
     void newConnect();
     void disconnect();
     void savePicture();

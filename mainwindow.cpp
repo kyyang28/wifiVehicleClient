@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setWindowTitle(tr("Wifi surveillant vehicle (智能监控无人车)"));
+    setWindowTitle(tr("Wifi Vehicle Client"));
     setObjectName("MainWindow");
     setStyleSheet("#MainWindow{border-image:url(:/wifiVehicleImages/image/background.png);}");
 
@@ -19,7 +19,6 @@ MainWindow::MainWindow(QWidget *parent) :
     carControl      = new control;
     isConnected     = false;
     isConnecting    = false;
-    isBuzzerOn      = false;
     openvideo       = false;
 
     /* if client connected the server, the socketSucceed will be invoked */
@@ -38,8 +37,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->stopCamButton->setEnabled(false);
     ui->capFrameButton->setEnabled(false);
     ui->readTempButton->setEnabled(false);
-    ui->buzzerButton->setEnabled(false);
     ui->pwmMotorSlider->setEnabled(false);
+    ui->camUpButton->setEnabled(false);
+    ui->camDownButton->setEnabled(false);
+    ui->camLeftButton->setEnabled(false);
+    ui->camRightButton->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -84,7 +86,6 @@ void MainWindow::socketSucceed()
     ui->stopCamButton->setEnabled(true);
     ui->capFrameButton->setEnabled(true);
     ui->readTempButton->setEnabled(true);
-    ui->buzzerButton->setEnabled(true);
     ui->pwmMotorSlider->setEnabled(true);
 }
 
@@ -103,6 +104,7 @@ void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
     }else {
 #endif
         ui->controlState->setText(tr("Keyboard"));
+        /* Wifi vehicle movements */
         if ( (keyEvent->key() == Qt::Key_W) && (keyEvent->isAutoRepeat() == false) ) {
             ui->moveState->setText(tr("Foreward"));
             carControl->vehicleMoveForward();
@@ -131,22 +133,34 @@ void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
             keyEvent->ignore();
         }
 
-        if ( (keyEvent->key() == Qt::Key_B) && (keyEvent->isAutoRepeat() == false) ) {
-            if (!isBuzzerOn) {
-                ui->buzzerButton->setText(tr("Buzzer on"));
-                carControl->buzzerOn();
-                isBuzzerOn = true;
-                //ui->rightButton->setEnabled(false);
-                keyEvent->ignore();
-            }else {
-                ui->buzzerButton->setText(tr("Buzzer off"));
-                carControl->buzzerOff();
-                isBuzzerOn = false;
-                //ui->rightButton->setEnabled(false);
-                keyEvent->ignore();
-            }
+        /* Camera control related */
+        if ( (keyEvent->key() == Qt::Key_I) && (keyEvent->isAutoRepeat() == false) ) {
+            ui->camState->setText(tr("Cam Up"));
+            carControl->camServoMoveUp();
+            ui->camUpButton->setEnabled(false);
+            keyEvent->ignore();
         }
 
+        if ( (keyEvent->key() == Qt::Key_K) && (keyEvent->isAutoRepeat() == false) ) {
+            ui->camState->setText(tr("Cam Down"));
+            carControl->camServoMoveDown();
+            ui->camDownButton->setEnabled(false);
+            keyEvent->ignore();
+        }
+
+        if ( (keyEvent->key() == Qt::Key_J) && (keyEvent->isAutoRepeat() == false) ) {
+            ui->camState->setText(tr("Cam Left"));
+            carControl->camServoMoveLeft();
+            ui->camLeftButton->setEnabled(false);
+            keyEvent->ignore();
+        }
+
+        if ( (keyEvent->key() == Qt::Key_L) && (keyEvent->isAutoRepeat() == false) ) {
+            ui->camState->setText(tr("Cam Right"));
+            carControl->camServoMoveRight();
+            ui->camRightButton->setEnabled(false);
+            keyEvent->ignore();
+        }
     //}
 }
 
@@ -154,6 +168,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent *keyEvent)
 {
     if (isConnected) {
         ui->controlState->setText(tr("Unknown"));
+        /* Wifi vehicle control keys release */
         if ( (keyEvent->key() == Qt::Key_W || keyEvent->key() == Qt::Key_S ||
               keyEvent->key() == Qt::Key_A || keyEvent->key() == Qt::Key_D) &&
              (keyEvent->isAutoRepeat() == false) ) {
@@ -163,6 +178,17 @@ void MainWindow::keyReleaseEvent(QKeyEvent *keyEvent)
             ui->backButton->setEnabled(true);
             ui->leftButton->setEnabled(true);
             ui->rightButton->setEnabled(true);
+
+            /* Camera control keys release */
+            if ( (keyEvent->key() == Qt::Key_I || keyEvent->key() == Qt::Key_K ||
+                  keyEvent->key() == Qt::Key_J || keyEvent->key() == Qt::Key_L) &&
+                 (keyEvent->isAutoRepeat() == false) ) {
+                ui->camState->setText(tr("Unknown"));
+                ui->camUpButton->setEnabled(true);
+                ui->camDownButton->setEnabled(true);
+                ui->camLeftButton->setEnabled(true);
+                ui->camRightButton->setEnabled(true);
+            }
         }
     }
 }
@@ -277,7 +303,6 @@ void MainWindow::on_disconnectButton_clicked()
         ui->actionConnect->setEnabled(true);
         ui->disconnectButton->setEnabled(false);
         ui->actionDisconnect->setEnabled(false);
-        ui->buzzerButton->setText(tr("Buzzer"));
 
         ui->frontButton->setEnabled(false);
         ui->backButton->setEnabled(false);
@@ -287,8 +312,11 @@ void MainWindow::on_disconnectButton_clicked()
         ui->stopCamButton->setEnabled(false);
         ui->capFrameButton->setEnabled(false);
         ui->readTempButton->setEnabled(false);
-        ui->buzzerButton->setEnabled(false);
         ui->pwmMotorSlider->setEnabled(false);
+        ui->camUpButton->setEnabled(false);
+        ui->camDownButton->setEnabled(false);
+        ui->camLeftButton->setEnabled(false);
+        ui->camRightButton->setEnabled(false);
 
         /* Stop the camera */
         openvideo = false;
@@ -311,6 +339,10 @@ void MainWindow::on_startCamButton_clicked()
             ui->videoWidget->ipAddr     = setup->ipAddr;
             ui->videoWidget->videoPort  = setup->videoPort;
             ui->videoWidget->newConnect();
+            ui->camUpButton->setEnabled(true);
+            ui->camDownButton->setEnabled(true);
+            ui->camLeftButton->setEnabled(true);
+            ui->camRightButton->setEnabled(true);
             //update();
         }else {
             QMessageBox::warning(this, tr("Camera warning"),
@@ -331,6 +363,10 @@ void MainWindow::on_stopCamButton_clicked()
         ui->videoWidget->videotcpSocket->disconnect();
         ui->videoWidget->image.load(":/wifiVehicleImages/image/video_background.png");
         update();
+        ui->camUpButton->setEnabled(false);
+        ui->camDownButton->setEnabled(false);
+        ui->camLeftButton->setEnabled(false);
+        ui->camRightButton->setEnabled(false);
     }
 }
 
@@ -355,23 +391,6 @@ void MainWindow::on_readTempButton_clicked()
         float temp;
         temp = carControl->readTemperature();
         ui->tempLcdNumber->display(temp);
-    }
-}
-
-void MainWindow::on_buzzerButton_clicked()
-{
-    if (!isConnected) {
-        QMessageBox::warning(this, tr("Buzzer warning"),
-                             tr("Please connect to the server before operating on the buzzer"),
-                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
-    }else {
-        if (!carControl->isBuzzerOn) {
-            carControl->buzzerOn();
-            ui->buzzerButton->setText(tr("Buzzer ON"));
-        }else {
-            carControl->buzzerOff();
-            ui->buzzerButton->setText(tr("Buzzer OFF"));
-        }
     }
 }
 
@@ -431,7 +450,6 @@ void MainWindow::on_actionDisconnect_triggered()
         ui->actionConnect->setEnabled(true);
         ui->disconnectButton->setEnabled(false);
         ui->actionDisconnect->setEnabled(false);
-        ui->buzzerButton->setText(tr("Buzzer"));
 
         ui->frontButton->setEnabled(false);
         ui->backButton->setEnabled(false);
@@ -441,8 +459,11 @@ void MainWindow::on_actionDisconnect_triggered()
         ui->stopCamButton->setEnabled(false);
         ui->capFrameButton->setEnabled(false);
         ui->readTempButton->setEnabled(false);
-        ui->buzzerButton->setEnabled(false);
         ui->pwmMotorSlider->setEnabled(false);
+        ui->camUpButton->setEnabled(false);
+        ui->camDownButton->setEnabled(false);
+        ui->camLeftButton->setEnabled(false);
+        ui->camRightButton->setEnabled(false);
 
         /* Stop the camera */
         openvideo = false;
@@ -484,5 +505,73 @@ void MainWindow::savePicture()
                                             QMessageBox::Ok, QMessageBox::Ok);
             }
         }
+    }
+}
+
+void MainWindow::on_camUpButton_pressed()
+{
+}
+
+void MainWindow::on_camUpButton_released()
+{
+}
+
+void MainWindow::on_camDownButton_pressed()
+{
+}
+
+void MainWindow::on_camDownButton_released()
+{
+}
+
+void MainWindow::on_camLeftButton_pressed()
+{
+    if (!openvideo) {
+        QMessageBox::warning(this, tr("Camera servo warning"),
+                             tr("Please open the camera before pressing the cameraServo left button"),
+                             QMessageBox::Ok, QMessageBox::Ok);
+    }else {
+        ui->controlState->setText(tr("Mouse"));
+        ui->camState->setText(tr("Cam Left"));
+        carControl->camServoMoveLeft();
+    }
+}
+
+void MainWindow::on_camLeftButton_released()
+{
+    if (!openvideo) {
+        QMessageBox::warning(this, tr("Camera servo warning"),
+                             tr("Please start the camera first!"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
+        ui->controlState->setText(tr("Unknown"));
+        ui->camState->setText(tr("Unknown"));
+        //carControl->camServoStop();
+    }
+}
+
+void MainWindow::on_camRightButton_pressed()
+{
+    if (!openvideo) {
+        QMessageBox::warning(this, tr("Camera servo warning"),
+                             tr("Please open the camera before pressing the cameraServo right button"),
+                             QMessageBox::Ok, QMessageBox::Ok);
+    }else {
+        ui->controlState->setText(tr("Mouse"));
+        ui->camState->setText(tr("Cam Right"));
+        carControl->camServoMoveRight();
+    }
+}
+
+void MainWindow::on_camRightButton_released()
+{
+    if (!openvideo) {
+        QMessageBox::warning(this, tr("Camera servo warning"),
+                             tr("Please start the camera first!"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
+        ui->controlState->setText(tr("Unknown"));
+        ui->camState->setText(tr("Unknown"));
+        //carControl->camServoStop();
     }
 }

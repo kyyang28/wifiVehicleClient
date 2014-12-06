@@ -4,26 +4,40 @@
 #include <QtNetwork>
 
 /* request type */
-#define REQ_CMD_TYPE_DIRECTION              0
-#define REQ_CMD_TYPE_BUZZER                 1
-#define REQ_CMD_TYPE_SPEED                  2
-#define REQ_CMD_TYPE_TEMPERATURE            3
+#define REQ_CMD_TYPE_DIRECTION                  0
+#define REQ_CMD_TYPE_BUZZER                     1
+#define REQ_CMD_TYPE_SPEED                      2
+#define REQ_CMD_TYPE_TEMPERATURE                3
+#define REQ_CMD_TYPE_CAMSERVO_OPERATION         4
 
-#define WIFI_VEHICLE_MOVE_FORWARD           0
-#define WIFI_VEHICLE_MOVE_BACKWARD          1
+/* Vehicle movements related */
+#define WIFI_VEHICLE_MOVE_FORWARD               0
+#define WIFI_VEHICLE_MOVE_BACKWARD              1
 /* DONOT use number '2', since ioctl is taken this number. If you have to use 2, then use magic number */
 /* We don't use ioctl's magic number here, because our app is Windows Qt, it cannot use <sys/ioctl> header file */
-#define WIFI_VEHICLE_MOVE_LEFT              3
-#define WIFI_VEHICLE_MOVE_RIGHT             4
-#define WIFI_VEHICLE_STOP                   5
+#define WIFI_VEHICLE_MOVE_LEFT                  3
+#define WIFI_VEHICLE_MOVE_RIGHT                 4
+#define WIFI_VEHICLE_STOP                       5
 
-#define WIFI_VEHICLE_BUZZER_ON              6
-#define WIFI_VEHICLE_BUZZER_OFF             7
+/* Buzzer related */
+#define WIFI_VEHICLE_BUZZER_ON                  6
+#define WIFI_VEHICLE_BUZZER_OFF                 7
+
+/* Camera servo related */
+#define MARS_PWM_IOCTL_SET_DUTYRATIO_OPSCODE	1
+#define MARS_PWM_IOCTL_STOP_OPSCODE		0
+#define MARS_PWM_CAMSERVO_DUTY_TIME_70K         700000            // 180бу
+#define MARS_PWM_CAMSERVO_DUTY_TIME_100K        1000000           // 135бу
+#define MARS_PWM_CAMSERVO_DUTY_TIME_140K        1400000           // 90бу
+#define MARS_PWM_CAMSERVO_DUTY_TIME_180K        1800000           // 45бу
+#define MARS_PWM_CAMSERVO_DUTY_TIME_219K        2190000           // 0бу
 
 struct reqMsg {
     unsigned char type;
     unsigned char dir;
-    unsigned char speed;        /* 0 ~ 100 */
+    unsigned int  camServoOpsCode;
+    unsigned int  camServoDutyNS;
+    unsigned char speed;            /* 0 ~ 100 */
     float temp;
 };
 
@@ -38,12 +52,17 @@ public:
     void vehicleTurnLeft();
     void vehicleTurnRight();
     void vehicleStop();
-    void buzzerOn();
-    void buzzerOff();
+    //void buzzerOn();
+    //void buzzerOff();
     void pwmMotorChange(int value);
     float readTemperature();
+    void camServoMoveUp();
+    void camServoMoveDown();
+    void camServoMoveLeft();
+    void camServoMoveRight();
+    void camServoStop();
     QTcpSocket *tcpSocket;
-    int isBuzzerOn;
+    //int isBuzzerOn;
 
 private:
     struct reqMsg request;

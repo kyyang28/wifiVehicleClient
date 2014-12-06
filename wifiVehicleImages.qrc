@@ -22,5 +22,6 @@
         <file>image/file.png</file>
         <file>image/save.png</file>
         <file>image/dir.png</file>
+        <file>image/degree.png</file>
     </qresource>
 </RCC>
