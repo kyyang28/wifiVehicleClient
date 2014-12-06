@@ -16,20 +16,23 @@ SOURCES += main.cpp\
     control.cpp \
     setupdialog.cpp \
     aboutdialog.cpp \
-    grapdialog.cpp
+    grapdialog.cpp \
+    logindialog.cpp
 
 HEADERS  += mainwindow.h \
     displayvideo.h \
     control.h \
     setupdialog.h \
     aboutdialog.h \
-    grapdialog.h
+    grapdialog.h \
+    logindialog.h
 
 FORMS    += mainwindow.ui \
     setupdialog.ui \
     aboutdialog.ui \
     grapdialog.ui \
-    grapdialog.ui
+    grapdialog.ui \
+    logindialog.ui
 
 RESOURCES += \
     wifiVehicleImages.qrc
@@ -39,6 +42,9 @@ OTHER_FILES += \
 
 RC_FILE = \
     icon.rc
+
+
+
 
 
 

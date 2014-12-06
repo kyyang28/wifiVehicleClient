@@ -23,5 +23,8 @@
         <file>image/save.png</file>
         <file>image/dir.png</file>
         <file>image/degree.png</file>
+        <file>image/loginBackground.png</file>
+        <file>image/login.png</file>
+        <file>image/logout.png</file>
     </qresource>
 </RCC>
