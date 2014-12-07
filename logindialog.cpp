@@ -36,8 +36,13 @@ void loginDialog::on_loginButton_clicked()
         QMessageBox::warning(this, tr("Login warning"),
                              tr("The username or password is not matched, please re-enter the correct info or you forgot the info?"),
                              QMessageBox::Yes);
-        ui->usrLineEdit->clear();
-        ui->pwdLineEdit->clear();
-        ui->usrLineEdit->setFocus();
+        //if (ui->usrLineEdit->text().trimmed() != tr("wifivehicleclient")) {
+            ui->usrLineEdit->clear();
+            ui->pwdLineEdit->clear();
+            ui->usrLineEdit->setFocus();
+        //}else if (ui->pwdLineEdit->text() != tr("1234")) {
+        //    ui->pwdLineEdit->clear();
+        //    ui->pwdLineEdit->setFocus();
+        //}
     }
 }

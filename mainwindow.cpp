@@ -568,7 +568,7 @@ void MainWindow::on_camLeftButton_released()
     }else {
         ui->controlState->setText(tr("Unknown"));
         ui->camState->setText(tr("Unknown"));
-        //carControl->camServoStop();
+        carControl->camServoStop();
     }
 }
 
@@ -594,7 +594,7 @@ void MainWindow::on_camRightButton_released()
     }else {
         ui->controlState->setText(tr("Unknown"));
         ui->camState->setText(tr("Unknown"));
-        //carControl->camServoStop();
+        carControl->camServoStop();
     }
 }
 
