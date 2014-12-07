@@ -26,5 +26,11 @@
         <file>image/loginBackground.png</file>
         <file>image/login.png</file>
         <file>image/logout.png</file>
+        <file>image/autoCtrlMode.png</file>
+        <file>image/manualCtrlMode.png</file>
+        <file>image/ctrlModeBackground.png</file>
+        <file>image/exit.png</file>
+        <file>image/readTemperature.png</file>
+        <file>image/back2Mode.png</file>
     </qresource>
 </RCC>

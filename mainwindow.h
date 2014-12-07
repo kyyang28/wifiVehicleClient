@@ -8,10 +8,13 @@
 #include "displayvideo.h"
 #include "aboutdialog.h"
 #include "grapdialog.h"
+#include "ctrlmodedialog.h"
 
 namespace Ui {
     class MainWindow;
 }
+
+class ctrlModeDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -73,10 +76,13 @@ private slots:
     void on_camLeftButton_released();
     void on_camRightButton_released();
 
+    /* Miscellaneous */
+    void on_back2ModeButton_clicked();
 
 private:
     Ui::MainWindow *ui;
 
+    ctrlModeDialog *ctrlMode;
     SetupDialog *setup;
     grapDialog *grap;
     AboutDialog *about;

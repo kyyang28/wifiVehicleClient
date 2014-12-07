@@ -15,7 +15,7 @@ loginDialog::loginDialog(QWidget *parent) :
     ui->loginButton->setObjectName("loginButton");
     ui->loginButton->setStyleSheet("#loginButton{border-image:url(:/wifiVehicleImages/image/login.png);}");
     ui->exitButton->setObjectName("exitButton");
-    ui->exitButton->setStyleSheet("#exitButton{border-image:url(:/wifiVehicleImages/image/logout.png);}");
+    ui->exitButton->setStyleSheet("#exitButton{border-image:url(:/wifiVehicleImages/image/exit.png);}");
 }
 
 loginDialog::~loginDialog()
@@ -34,7 +34,7 @@ void loginDialog::on_loginButton_clicked()
         accept();
     }else {
         QMessageBox::warning(this, tr("Login warning"),
-                             tr("The input username or password is not matched, please re-enter the correct info or you forgot the info?"),
+                             tr("The username or password is not matched, please re-enter the correct info or you forgot the info?"),
                              QMessageBox::Yes);
         ui->usrLineEdit->clear();
         ui->pwdLineEdit->clear();

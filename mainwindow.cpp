@@ -12,7 +12,14 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle(tr("Wifi Vehicle Client"));
     setObjectName("MainWindow");
     setStyleSheet("#MainWindow{border-image:url(:/wifiVehicleImages/image/background.png);}");
+    ui->readTempButton->setObjectName("readTempButton");
+    ui->readTempButton->setStyleSheet("#readTempButton{border-image:url(:/wifiVehicleImages/image/readTemperature.png);}");
+    ui->exitButton->setObjectName("exitButton");
+    ui->exitButton->setStyleSheet("#exitButton{border-image:url(:/wifiVehicleImages/image/exit.png);}");
+    ui->back2ModeButton->setObjectName("back2ModeButton");
+    ui->back2ModeButton->setStyleSheet("#back2ModeButton{border-image:url(:/wifiVehicleImages/image/back2Mode.png);}");
 
+    //ctrlMode        = new ctrlModeDialog;     // WARNING: The program cannot be running, still need to figure it out
     setup           = new SetupDialog(this);
     grap            = new grapDialog(this);
     about           = new AboutDialog(this);
@@ -42,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->camDownButton->setEnabled(false);
     ui->camLeftButton->setEnabled(false);
     ui->camRightButton->setEnabled(false);
+    ui->back2ModeButton->setEnabled(true);
 }
 
 MainWindow::~MainWindow()
@@ -87,16 +95,24 @@ void MainWindow::socketSucceed()
     ui->capFrameButton->setEnabled(true);
     ui->readTempButton->setEnabled(true);
     ui->pwmMotorSlider->setEnabled(true);
+    ui->back2ModeButton->setEnabled(false);
 }
 
 void MainWindow::socketFailed()
 {
     ui->netState->setText(tr("Connection failure"));
+    ui->connectButton->setEnabled(true);
+    ui->actionConnect->setEnabled(true);
+    ui->disconnectButton->setEnabled(false);
+    ui->actionDisconnect->setEnabled(false);
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
 {
 #if 0
+    /*  Since we disabled the control buttons at the beginning,
+     *  so we dont need to determine whether the client is connected the server or not
+     */
     if (!isConnected) {
         QMessageBox::warning(this, tr("Key press warning"),
                              tr("Please connect to the server before pressing the direction keys"),
@@ -133,33 +149,35 @@ void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
             keyEvent->ignore();
         }
 
-        /* Camera control related */
-        if ( (keyEvent->key() == Qt::Key_I) && (keyEvent->isAutoRepeat() == false) ) {
-            ui->camState->setText(tr("Cam Up"));
-            carControl->camServoMoveUp();
-            ui->camUpButton->setEnabled(false);
-            keyEvent->ignore();
-        }
+        if (openvideo) {
+            /* Camera control related */
+            if ( (keyEvent->key() == Qt::Key_I) && (keyEvent->isAutoRepeat() == false) ) {
+                ui->camState->setText(tr("Cam Up"));
+                carControl->camServoMoveUp();
+                ui->camUpButton->setEnabled(false);
+                keyEvent->ignore();
+            }
 
-        if ( (keyEvent->key() == Qt::Key_K) && (keyEvent->isAutoRepeat() == false) ) {
-            ui->camState->setText(tr("Cam Down"));
-            carControl->camServoMoveDown();
-            ui->camDownButton->setEnabled(false);
-            keyEvent->ignore();
-        }
+            if ( (keyEvent->key() == Qt::Key_K) && (keyEvent->isAutoRepeat() == false) ) {
+                ui->camState->setText(tr("Cam Down"));
+                carControl->camServoMoveDown();
+                ui->camDownButton->setEnabled(false);
+                keyEvent->ignore();
+            }
 
-        if ( (keyEvent->key() == Qt::Key_J) && (keyEvent->isAutoRepeat() == false) ) {
-            ui->camState->setText(tr("Cam Left"));
-            carControl->camServoMoveLeft();
-            ui->camLeftButton->setEnabled(false);
-            keyEvent->ignore();
-        }
+            if ( (keyEvent->key() == Qt::Key_J) && (keyEvent->isAutoRepeat() == false) ) {
+                ui->camState->setText(tr("Cam Left"));
+                carControl->camServoMoveLeft();
+                ui->camLeftButton->setEnabled(false);
+                keyEvent->ignore();
+            }
 
-        if ( (keyEvent->key() == Qt::Key_L) && (keyEvent->isAutoRepeat() == false) ) {
-            ui->camState->setText(tr("Cam Right"));
-            carControl->camServoMoveRight();
-            ui->camRightButton->setEnabled(false);
-            keyEvent->ignore();
+            if ( (keyEvent->key() == Qt::Key_L) && (keyEvent->isAutoRepeat() == false) ) {
+                ui->camState->setText(tr("Cam Right"));
+                carControl->camServoMoveRight();
+                ui->camRightButton->setEnabled(false);
+                keyEvent->ignore();
+            }
         }
     //}
 }
@@ -178,7 +196,9 @@ void MainWindow::keyReleaseEvent(QKeyEvent *keyEvent)
             ui->backButton->setEnabled(true);
             ui->leftButton->setEnabled(true);
             ui->rightButton->setEnabled(true);
+        }
 
+        if (openvideo) {
             /* Camera control keys release */
             if ( (keyEvent->key() == Qt::Key_I || keyEvent->key() == Qt::Key_K ||
                   keyEvent->key() == Qt::Key_J || keyEvent->key() == Qt::Key_L) &&
@@ -317,6 +337,7 @@ void MainWindow::on_disconnectButton_clicked()
         ui->camDownButton->setEnabled(false);
         ui->camLeftButton->setEnabled(false);
         ui->camRightButton->setEnabled(false);
+        ui->back2ModeButton->setEnabled(true);
 
         /* Stop the camera */
         openvideo = false;
@@ -464,6 +485,7 @@ void MainWindow::on_actionDisconnect_triggered()
         ui->camDownButton->setEnabled(false);
         ui->camLeftButton->setEnabled(false);
         ui->camRightButton->setEnabled(false);
+        ui->back2ModeButton->setEnabled(true);
 
         /* Stop the camera */
         openvideo = false;
@@ -574,4 +596,10 @@ void MainWindow::on_camRightButton_released()
         ui->camState->setText(tr("Unknown"));
         //carControl->camServoStop();
     }
+}
+
+void MainWindow::on_back2ModeButton_clicked()
+{
+    //ctrlMode->show();
+    //this->hide();
 }
