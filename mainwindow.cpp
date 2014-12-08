@@ -532,18 +532,54 @@ void MainWindow::savePicture()
 
 void MainWindow::on_camUpButton_pressed()
 {
+    if (!openvideo) {
+        QMessageBox::warning(this, tr("Camera servo warning"),
+                             tr("Please open the camera before pressing the cameraServo up button"),
+                             QMessageBox::Ok, QMessageBox::Ok);
+    }else {
+        ui->controlState->setText(tr("Mouse"));
+        ui->camState->setText(tr("Cam Up"));
+        carControl->camServoMoveUp();
+    }
 }
 
 void MainWindow::on_camUpButton_released()
 {
+    if (!openvideo) {
+        QMessageBox::warning(this, tr("Camera servo warning"),
+                             tr("Please start the camera first!"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
+        ui->controlState->setText(tr("Unknown"));
+        ui->camState->setText(tr("Unknown"));
+        carControl->camServoStop();
+    }
 }
 
 void MainWindow::on_camDownButton_pressed()
 {
+    if (!openvideo) {
+        QMessageBox::warning(this, tr("Camera servo warning"),
+                             tr("Please open the camera before pressing the cameraServo down button"),
+                             QMessageBox::Ok, QMessageBox::Ok);
+    }else {
+        ui->controlState->setText(tr("Mouse"));
+        ui->camState->setText(tr("Cam Down"));
+        carControl->camServoMoveDown();
+    }
 }
 
 void MainWindow::on_camDownButton_released()
 {
+    if (!openvideo) {
+        QMessageBox::warning(this, tr("Camera servo warning"),
+                             tr("Please start the camera first!"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
+        ui->controlState->setText(tr("Unknown"));
+        ui->camState->setText(tr("Unknown"));
+        carControl->camServoStop();
+    }
 }
 
 void MainWindow::on_camLeftButton_pressed()

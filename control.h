@@ -26,17 +26,29 @@
 /* Camera servo related */
 #define MARS_PWM_IOCTL_SET_DUTYRATIO_OPSCODE	1
 #define MARS_PWM_IOCTL_STOP_OPSCODE		0
-#define MARS_PWM_CAMSERVO_DUTY_TIME_70K         700000            // 180бу
-#define MARS_PWM_CAMSERVO_DUTY_TIME_100K        1000000           // 135бу
-#define MARS_PWM_CAMSERVO_DUTY_TIME_140K        1400000           // 90бу
-#define MARS_PWM_CAMSERVO_DUTY_TIME_180K        1800000           // 45бу
-#define MARS_PWM_CAMSERVO_DUTY_TIME_219K        2190000           // 0бу
+
+#define MARS_PWM_CAMSERVO_TYPE_HORIZONTAL       0
+#define MARS_PWM_CAMSERVO_TYPE_VERTICAL         1
+
+#define MARS_PWM_CAMSERVO_HORIZONTAL_DUTY_TIME_70K         700000            // 180бу
+#define MARS_PWM_CAMSERVO_HORIZONTAL_DUTY_TIME_100K        1000000           // 135бу
+#define MARS_PWM_CAMSERVO_HORIZONTAL_DUTY_TIME_140K        1400000           // 90бу
+#define MARS_PWM_CAMSERVO_HORIZONTAL_DUTY_TIME_180K        1800000           // 45бу
+#define MARS_PWM_CAMSERVO_HORIZONTAL_DUTY_TIME_219K        2190000           // 0бу
+
+#define MARS_PWM_CAMSERVO_VERTICAL_DUTY_TIME_120K          1200000            // 180бу
+#define MARS_PWM_CAMSERVO_VERTICAL_DUTY_TIME_146K          1460000           // 135бу
+#define MARS_PWM_CAMSERVO_VERTICAL_DUTY_TIME_178K          1780000           // 90бу
+#define MARS_PWM_CAMSERVO_VERTICAL_DUTY_TIME_234K          2340000           // 45бу
+#define MARS_PWM_CAMSERVO_VERTICAL_DUTY_TIME_269K          2690000           // 0бу
 
 struct reqMsg {
     unsigned char type;
     unsigned char dir;
+    unsigned int  camServoType;
     unsigned int  camServoOpsCode;
-    unsigned int  camServoDutyNS;
+    unsigned int  camServoHorizontalDutyNS;
+    unsigned int  camServoVerticalDutyNS;
     unsigned char speed;            /* 0 ~ 100 */
     float temp;
 };

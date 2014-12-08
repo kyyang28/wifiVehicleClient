@@ -6,7 +6,8 @@ control::control()
 {
     tcpSocket = new QTcpSocket;
     memset(&request, 0, sizeof(struct reqMsg));
-    request.camServoDutyNS = MARS_PWM_CAMSERVO_DUTY_TIME_140K;
+    request.camServoHorizontalDutyNS    = MARS_PWM_CAMSERVO_HORIZONTAL_DUTY_TIME_140K;
+    request.camServoVerticalDutyNS      = MARS_PWM_CAMSERVO_VERTICAL_DUTY_TIME_269K - 40000;
     //qDebug("request.camServoDutyNS = %u\n", request.camServoDutyNS);
     //isBuzzerOn = 0;
 }
@@ -97,6 +98,19 @@ void control::camServoMoveUp()
 {
     //memset(&request, 0, sizeof(struct reqMsg));
     request.type            = REQ_CMD_TYPE_CAMSERVO_OPERATION;
+    request.camServoOpsCode = MARS_PWM_IOCTL_SET_DUTYRATIO_OPSCODE;
+    request.camServoType    = MARS_PWM_CAMSERVO_TYPE_VERTICAL;
+
+    if (request.camServoVerticalDutyNS <= MARS_PWM_CAMSERVO_VERTICAL_DUTY_TIME_120K) {
+        QMessageBox::warning(NULL, "Camera Servo Warning",
+                             "Duty time reached the upper maximum capacity!",
+                             QMessageBox::Ok, QMessageBox::Ok);
+    }
+
+    request.camServoVerticalDutyNS -= 40000;
+    if (request.camServoVerticalDutyNS < MARS_PWM_CAMSERVO_VERTICAL_DUTY_TIME_120K)
+        request.camServoVerticalDutyNS = MARS_PWM_CAMSERVO_VERTICAL_DUTY_TIME_120K;
+
     tcpSocket->write((const char *)&request, sizeof(struct reqMsg));
 }
 
@@ -104,6 +118,19 @@ void control::camServoMoveDown()
 {
     //memset(&request, 0, sizeof(struct reqMsg));
     request.type            = REQ_CMD_TYPE_CAMSERVO_OPERATION;
+    request.camServoOpsCode = MARS_PWM_IOCTL_SET_DUTYRATIO_OPSCODE;
+    request.camServoType    = MARS_PWM_CAMSERVO_TYPE_VERTICAL;
+
+    if (request.camServoVerticalDutyNS >= MARS_PWM_CAMSERVO_VERTICAL_DUTY_TIME_269K) {
+        QMessageBox::warning(NULL, "Camera Servo Warning",
+                             "Duty time reached the lower minimum capacity!",
+                             QMessageBox::Ok, QMessageBox::Ok);
+    }
+
+    request.camServoVerticalDutyNS += 40000;
+    if (request.camServoVerticalDutyNS > MARS_PWM_CAMSERVO_VERTICAL_DUTY_TIME_269K)
+        request.camServoVerticalDutyNS = MARS_PWM_CAMSERVO_VERTICAL_DUTY_TIME_269K;
+
     tcpSocket->write((const char *)&request, sizeof(struct reqMsg));
 }
 
@@ -112,16 +139,17 @@ void control::camServoMoveLeft()
     //memset(&request, 0, sizeof(struct reqMsg));
     request.type            = REQ_CMD_TYPE_CAMSERVO_OPERATION;
     request.camServoOpsCode = MARS_PWM_IOCTL_SET_DUTYRATIO_OPSCODE;
+    request.camServoType    = MARS_PWM_CAMSERVO_TYPE_HORIZONTAL;
 
-    if (request.camServoDutyNS >= MARS_PWM_CAMSERVO_DUTY_TIME_219K) {
+    if (request.camServoHorizontalDutyNS >= MARS_PWM_CAMSERVO_HORIZONTAL_DUTY_TIME_219K) {
         QMessageBox::warning(NULL, "Camera Servo Warning",
                              "Duty time reached the maximum capacity!",
                              QMessageBox::Ok, QMessageBox::Ok);
     }
 
-    request.camServoDutyNS += 40000;
-    if (request.camServoDutyNS > MARS_PWM_CAMSERVO_DUTY_TIME_219K)
-        request.camServoDutyNS = MARS_PWM_CAMSERVO_DUTY_TIME_219K;
+    request.camServoHorizontalDutyNS += 40000;
+    if (request.camServoHorizontalDutyNS > MARS_PWM_CAMSERVO_HORIZONTAL_DUTY_TIME_219K)
+        request.camServoHorizontalDutyNS = MARS_PWM_CAMSERVO_HORIZONTAL_DUTY_TIME_219K;
 
     //qDebug("request.camServoDutyNS = %u\n", request.camServoDutyNS);
 
@@ -133,16 +161,17 @@ void control::camServoMoveRight()
     //memset(&request, 0, sizeof(struct reqMsg));
     request.type            = REQ_CMD_TYPE_CAMSERVO_OPERATION;
     request.camServoOpsCode = MARS_PWM_IOCTL_SET_DUTYRATIO_OPSCODE;
+    request.camServoType    = MARS_PWM_CAMSERVO_TYPE_HORIZONTAL;
 
-    if (request.camServoDutyNS <= MARS_PWM_CAMSERVO_DUTY_TIME_70K) {
+    if (request.camServoHorizontalDutyNS <= MARS_PWM_CAMSERVO_HORIZONTAL_DUTY_TIME_70K) {
         QMessageBox::warning(NULL, "Camera Servo Warning",
                              "Duty time reached the minimum capacity!",
                              QMessageBox::Ok, QMessageBox::Ok);
     }
 
-    request.camServoDutyNS -= 40000;
-    if (request.camServoDutyNS < MARS_PWM_CAMSERVO_DUTY_TIME_70K)
-        request.camServoDutyNS = MARS_PWM_CAMSERVO_DUTY_TIME_70K;
+    request.camServoHorizontalDutyNS -= 40000;
+    if (request.camServoHorizontalDutyNS < MARS_PWM_CAMSERVO_HORIZONTAL_DUTY_TIME_70K)
+        request.camServoHorizontalDutyNS = MARS_PWM_CAMSERVO_HORIZONTAL_DUTY_TIME_70K;
 
     //qDebug("request.camServoDutyNS = %u\n", request.camServoDutyNS);
 
