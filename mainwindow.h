@@ -78,6 +78,8 @@ private slots:
 
     /* Miscellaneous */
     void on_back2ModeButton_clicked();
+    void on_pwmLedsSlider_valueChanged(int value);
+    void on_ledsCheckBox_clicked();
 
 private:
     Ui::MainWindow *ui;

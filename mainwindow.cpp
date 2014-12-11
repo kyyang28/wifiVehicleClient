@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->back2ModeButton->setObjectName("back2ModeButton");
     ui->back2ModeButton->setStyleSheet("#back2ModeButton{border-image:url(:/wifiVehicleImages/image/back2Mode.png);}");
 
-    //ctrlMode        = new ctrlModeDialog;     // WARNING: The program cannot be running, still need to figure it out
+    //ctrlMode        = new ctrlModeDialog;     // WARNING: By adding this line, the program cannot be running, still need to figure it out
     setup           = new SetupDialog(this);
     grap            = new grapDialog(this);
     about           = new AboutDialog(this);
@@ -49,6 +49,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->camDownButton->setEnabled(false);
     ui->camLeftButton->setEnabled(false);
     ui->camRightButton->setEnabled(false);
+    ui->pwmLedsSlider->setEnabled(false);
+    ui->ledsCheckBox->setEnabled(false);
     ui->back2ModeButton->setEnabled(true);
 }
 
@@ -337,6 +339,8 @@ void MainWindow::on_disconnectButton_clicked()
         ui->camDownButton->setEnabled(false);
         ui->camLeftButton->setEnabled(false);
         ui->camRightButton->setEnabled(false);
+        ui->pwmLedsSlider->setEnabled(false);
+        ui->ledsCheckBox->setEnabled(false);
         ui->back2ModeButton->setEnabled(true);
 
         /* Stop the camera */
@@ -364,6 +368,8 @@ void MainWindow::on_startCamButton_clicked()
             ui->camDownButton->setEnabled(true);
             ui->camLeftButton->setEnabled(true);
             ui->camRightButton->setEnabled(true);
+            ui->pwmLedsSlider->setEnabled(true);
+            ui->ledsCheckBox->setEnabled(true);
             //update();
         }else {
             QMessageBox::warning(this, tr("Camera warning"),
@@ -388,6 +394,8 @@ void MainWindow::on_stopCamButton_clicked()
         ui->camDownButton->setEnabled(false);
         ui->camLeftButton->setEnabled(false);
         ui->camRightButton->setEnabled(false);
+        ui->pwmLedsSlider->setEnabled(false);
+        ui->ledsCheckBox->setEnabled(false);
     }
 }
 
@@ -485,6 +493,8 @@ void MainWindow::on_actionDisconnect_triggered()
         ui->camDownButton->setEnabled(false);
         ui->camLeftButton->setEnabled(false);
         ui->camRightButton->setEnabled(false);
+        ui->pwmLedsSlider->setEnabled(false);
+        ui->ledsCheckBox->setEnabled(false);
         ui->back2ModeButton->setEnabled(true);
 
         /* Stop the camera */
@@ -638,4 +648,27 @@ void MainWindow::on_back2ModeButton_clicked()
 {
     //ctrlMode->show();
     //this->hide();
+}
+
+void MainWindow::on_pwmLedsSlider_valueChanged(int value)
+{
+    if (!openvideo) {
+        QMessageBox::warning(this, tr("Leds warning"),
+                             tr("Please start the camera first!"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+    }else {
+        //qDebug("value = %d\n", value);
+        carControl->pwmLedsChange(value);
+        ui->pwmLedsLcdNumber->display(value);
+    }
+}
+
+void MainWindow::on_ledsCheckBox_clicked()
+{
+    if (ui->ledsCheckBox->isChecked())
+        /* Leds on */
+        carControl->ledsOn();
+    else
+        /* Leds off */
+        carControl->ledsOff();
 }

@@ -8,6 +8,7 @@ control::control()
     memset(&request, 0, sizeof(struct reqMsg));
     request.camServoHorizontalDutyNS    = MARS_PWM_CAMSERVO_HORIZONTAL_DUTY_TIME_140K;
     request.camServoVerticalDutyNS      = MARS_PWM_CAMSERVO_VERTICAL_DUTY_TIME_269K - 40000;
+    isLedsOn = 0;
     //qDebug("request.camServoDutyNS = %u\n", request.camServoDutyNS);
     //isBuzzerOn = 0;
 }
@@ -77,10 +78,36 @@ void control::buzzerOff()
 }
 #endif
 
+void control::ledsOn()
+{
+    //memset(&request, 0, sizeof(struct reqMsg));
+    request.type    = REQ_CMD_TYPE_LEDS_ONOFF_OPERATION;
+    request.dir     = WIFI_VEHICLE_LEDS_ON;
+    tcpSocket->write((const char *)&request, sizeof(struct reqMsg));
+    isLedsOn = 1;
+}
+
+void control::ledsOff()
+{
+    //memset(&request, 0, sizeof(struct reqMsg));
+    request.type    = REQ_CMD_TYPE_LEDS_ONOFF_OPERATION;
+    request.dir     = WIFI_VEHICLE_LEDS_OFF;
+    tcpSocket->write((const char *)&request, sizeof(struct reqMsg));
+    isLedsOn = 0;
+}
+
 void control::pwmMotorChange(int value)
 {
     //memset(&request, 0, sizeof(struct reqMsg));
     request.type    = REQ_CMD_TYPE_SPEED;
+    request.speed   = value;
+    tcpSocket->write((const char *)&request, sizeof(struct reqMsg));
+}
+
+void control::pwmLedsChange(int value)
+{
+    //memset(&request, 0, sizeof(struct reqMsg));
+    request.type    = REQ_CMD_TYPE_LEDS_PWM_OPERATION;
     request.speed   = value;
     tcpSocket->write((const char *)&request, sizeof(struct reqMsg));
 }

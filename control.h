@@ -9,6 +9,8 @@
 #define REQ_CMD_TYPE_SPEED                      2
 #define REQ_CMD_TYPE_TEMPERATURE                3
 #define REQ_CMD_TYPE_CAMSERVO_OPERATION         4
+#define REQ_CMD_TYPE_LEDS_ONOFF_OPERATION       5
+#define REQ_CMD_TYPE_LEDS_PWM_OPERATION         6
 
 /* Vehicle movements related */
 #define WIFI_VEHICLE_MOVE_FORWARD               0
@@ -19,9 +21,15 @@
 #define WIFI_VEHICLE_MOVE_RIGHT                 4
 #define WIFI_VEHICLE_STOP                       5
 
+#if 0
 /* Buzzer related */
 #define WIFI_VEHICLE_BUZZER_ON                  6
 #define WIFI_VEHICLE_BUZZER_OFF                 7
+#endif
+
+/* Leds related */
+#define WIFI_VEHICLE_LEDS_ON                    1
+#define WIFI_VEHICLE_LEDS_OFF                   0
 
 /* Camera servo related */
 #define MARS_PWM_IOCTL_SET_DUTYRATIO_OPSCODE	1
@@ -64,9 +72,12 @@ public:
     void vehicleTurnLeft();
     void vehicleTurnRight();
     void vehicleStop();
+    void ledsOn();
+    void ledsOff();
     //void buzzerOn();
     //void buzzerOff();
     void pwmMotorChange(int value);
+    void pwmLedsChange(int value);
     float readTemperature();
     void camServoMoveUp();
     void camServoMoveDown();
@@ -74,6 +85,7 @@ public:
     void camServoMoveRight();
     void camServoStop();
     QTcpSocket *tcpSocket;
+    int isLedsOn;
     //int isBuzzerOn;
 
 private:
