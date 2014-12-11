@@ -80,6 +80,7 @@ void control::buzzerOff()
 
 void control::ledsOn()
 {
+    //qDebug("ledsOn\n");
     //memset(&request, 0, sizeof(struct reqMsg));
     request.type    = REQ_CMD_TYPE_LEDS_ONOFF_OPERATION;
     request.dir     = WIFI_VEHICLE_LEDS_ON;
@@ -89,6 +90,7 @@ void control::ledsOn()
 
 void control::ledsOff()
 {
+    //qDebug("ledsOff\n");
     //memset(&request, 0, sizeof(struct reqMsg));
     request.type    = REQ_CMD_TYPE_LEDS_ONOFF_OPERATION;
     request.dir     = WIFI_VEHICLE_LEDS_OFF;

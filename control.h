@@ -28,8 +28,8 @@
 #endif
 
 /* Leds related */
-#define WIFI_VEHICLE_LEDS_ON                    1
-#define WIFI_VEHICLE_LEDS_OFF                   0
+#define WIFI_VEHICLE_LEDS_ON                    0       // low level
+#define WIFI_VEHICLE_LEDS_OFF                   1       // high level
 
 /* Camera servo related */
 #define MARS_PWM_IOCTL_SET_DUTYRATIO_OPSCODE	1

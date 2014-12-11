@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QDateTime>
 #include <QFileDialog>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -665,10 +666,13 @@ void MainWindow::on_pwmLedsSlider_valueChanged(int value)
 
 void MainWindow::on_ledsCheckBox_clicked()
 {
-    if (ui->ledsCheckBox->isChecked())
+    if (ui->ledsCheckBox->isChecked()) {
+        //qDebug("checkedornot = %d\n", ui->ledsCheckBox->isChecked());
         /* Leds on */
         carControl->ledsOn();
-    else
+    }else {
+        //qDebug("checkedornot = %d\n", ui->ledsCheckBox->isChecked());
         /* Leds off */
         carControl->ledsOff();
+    }
 }
