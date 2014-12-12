@@ -57,7 +57,8 @@ struct reqMsg {
     unsigned int  camServoOpsCode;
     unsigned int  camServoHorizontalDutyNS;
     unsigned int  camServoVerticalDutyNS;
-    unsigned char speed;            /* 0 ~ 100 */
+    unsigned char nightVisionBrightness;        /* 0 ~ 100 */
+    unsigned char motorSpeed;                   /* 0 ~ 100 */
     float temp;
 };
 

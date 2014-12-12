@@ -101,16 +101,16 @@ void control::ledsOff()
 void control::pwmMotorChange(int value)
 {
     //memset(&request, 0, sizeof(struct reqMsg));
-    request.type    = REQ_CMD_TYPE_SPEED;
-    request.speed   = value;
+    request.type            = REQ_CMD_TYPE_SPEED;
+    request.motorSpeed      = value;
     tcpSocket->write((const char *)&request, sizeof(struct reqMsg));
 }
 
 void control::pwmLedsChange(int value)
 {
     //memset(&request, 0, sizeof(struct reqMsg));
-    request.type    = REQ_CMD_TYPE_LEDS_PWM_OPERATION;
-    request.speed   = value;
+    request.type                        = REQ_CMD_TYPE_LEDS_PWM_OPERATION;
+    request.nightVisionBrightness       = value;
     tcpSocket->write((const char *)&request, sizeof(struct reqMsg));
 }
 

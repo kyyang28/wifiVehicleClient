@@ -1,9 +1,5 @@
 <RCC>
     <qresource prefix="/wifiVehicleImages">
-        <file>image/12W45332bZ-D1406.png</file>
-        <file>image/12W453330V0-F40K.png</file>
-        <file>image/12W453330430-EBR.png</file>
-        <file>image/12W453331340-G1C8.png</file>
         <file>image/background.png</file>
         <file>image/chinaz_PNG17.png</file>
         <file>image/connect.png</file>
@@ -32,5 +28,13 @@
         <file>image/exit.png</file>
         <file>image/readTemperature.png</file>
         <file>image/back2Mode.png</file>
+        <file>image/camDown.png</file>
+        <file>image/camLeft.png</file>
+        <file>image/camRight.png</file>
+        <file>image/camUp.png</file>
+        <file>image/down.png</file>
+        <file>image/left.png</file>
+        <file>image/right.png</file>
+        <file>image/up.png</file>
     </qresource>
 </RCC>
