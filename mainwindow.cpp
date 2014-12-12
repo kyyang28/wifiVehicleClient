@@ -342,13 +342,14 @@ void MainWindow::on_disconnectButton_clicked()
         ui->camRightButton->setEnabled(false);
         ui->pwmLedsSlider->setEnabled(false);
         ui->ledsCheckBox->setEnabled(false);
+        ui->ledsCheckBox->setChecked(false);
         ui->back2ModeButton->setEnabled(true);
 
         /* Stop the camera */
         openvideo = false;
         ui->videoWidget->videotcpSocket->disconnect();
         ui->videoWidget->image.load(":/wifiVehicleImages/image/video_background.png");
-        update();
+        update();        
     }
 }
 
@@ -369,7 +370,7 @@ void MainWindow::on_startCamButton_clicked()
             ui->camDownButton->setEnabled(true);
             ui->camLeftButton->setEnabled(true);
             ui->camRightButton->setEnabled(true);
-            ui->pwmLedsSlider->setEnabled(true);
+            //ui->pwmLedsSlider->setEnabled(true);
             ui->ledsCheckBox->setEnabled(true);
             //update();
         }else {
@@ -397,6 +398,8 @@ void MainWindow::on_stopCamButton_clicked()
         ui->camRightButton->setEnabled(false);
         ui->pwmLedsSlider->setEnabled(false);
         ui->ledsCheckBox->setEnabled(false);
+        carControl->ledsOff();
+        ui->ledsCheckBox->setChecked(false);
     }
 }
 
@@ -496,6 +499,7 @@ void MainWindow::on_actionDisconnect_triggered()
         ui->camRightButton->setEnabled(false);
         ui->pwmLedsSlider->setEnabled(false);
         ui->ledsCheckBox->setEnabled(false);
+        ui->ledsCheckBox->setChecked(false);
         ui->back2ModeButton->setEnabled(true);
 
         /* Stop the camera */
@@ -658,21 +662,35 @@ void MainWindow::on_pwmLedsSlider_valueChanged(int value)
                              tr("Please start the camera first!"),
                              QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     }else {
-        //qDebug("value = %d\n", value);
-        carControl->pwmLedsChange(value);
-        ui->pwmLedsLcdNumber->display(value);
+        if (carControl->isLedsOn) {
+            //qDebug("value = %d\n", value);
+            carControl->pwmLedsChange(value);
+            ui->pwmLedsLcdNumber->display(value);
+        }else {
+            QMessageBox::warning(this, tr("Leds brightness warning"),
+                                 tr("Please light on the night vision leds first!"),
+                                 QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+        }
     }
 }
 
 void MainWindow::on_ledsCheckBox_clicked()
 {
-    if (ui->ledsCheckBox->isChecked()) {
-        //qDebug("checkedornot = %d\n", ui->ledsCheckBox->isChecked());
-        /* Leds on */
-        carControl->ledsOn();
+    if (!openvideo) {
+        QMessageBox::warning(this, tr("Leds warning"),
+                             tr("Please start the camera first!"),
+                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     }else {
-        //qDebug("checkedornot = %d\n", ui->ledsCheckBox->isChecked());
-        /* Leds off */
-        carControl->ledsOff();
+        if (ui->ledsCheckBox->isChecked()) {
+            //qDebug("checkedornot = %d\n", ui->ledsCheckBox->isChecked());
+            /* Leds on */
+            carControl->ledsOn();
+            ui->pwmLedsSlider->setEnabled(true);
+        }else {
+            //qDebug("checkedornot = %d\n", ui->ledsCheckBox->isChecked());
+            /* Leds off */
+            carControl->ledsOff();
+            ui->pwmLedsSlider->setEnabled(false);
+        }
     }
 }

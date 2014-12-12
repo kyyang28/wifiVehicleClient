@@ -110,7 +110,7 @@ void control::pwmLedsChange(int value)
 {
     //memset(&request, 0, sizeof(struct reqMsg));
     request.type                        = REQ_CMD_TYPE_LEDS_PWM_OPERATION;
-    request.nightVisionBrightness       = value;
+    request.camLedsBrightness           = value;
     tcpSocket->write((const char *)&request, sizeof(struct reqMsg));
 }
 
